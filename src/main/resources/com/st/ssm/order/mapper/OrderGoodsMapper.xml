@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.st.ssm.order.mapper.OrderGoodsMapper">
+ 
+ <resultMap id="BaseResultMap" type="com.st.ssm.order.model.OrderGoodsModel">
+		<result column="id" property="id" />
+		<result column="order_code" property="orderCode" />
+		<result column="infor_code" property="inforCode" />
+		<result column="price" property="price" />	
+		<result column="sum" property="sum" />
+		
+	</resultMap>
+	
+ <sql id="Base_Column_List">
+		id, order_code, infor_code, price,sum
+	</sql>
+ <sql id="Example_Where_Clause">
+		where 1=1 
+	 		<if test="id != null and id != ''">
+				and id = #{id}
+			</if>
+			<if test="orderCode != null and orderCode != ''">
+				and order_code = #{orderCode}
+			</if>
+			<if test="inforCode != null and inforCode != ''">
+				and infor_code = #{inforCode}
+			</if>
+			<if test="price != null and price != ''">
+				and price = #{price}
+			</if>
+			<if test="sum != null and sum != ''">
+				and sum = #{sum}
+			</if>
+				
+	</sql>
+	
+	<insert id="insert" parameterType="Object">
+		insert into b2c.b_order_goods(order_code, infor_code, price,sum )
+		values(#{orderCode}, #{inforCode}, #{price},#{sum})
+	</insert>
+	
+	<select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from b2c.b_order_goods
+		where order_Code = #{orderCode}
+	</select>
+	<delete id="delete" parameterType="Object">
+		delete 
+		from b2c.b_order_goods 
+		where order_Code = #{orderCode}
+	</delete>
+<!-- 	<select id="selectCount" resultType="java.lang.Integer" parameterType="Object"> -->
+<!-- 		select count(1) from b2c.b_order_goods -->
+<!-- 		<include refid="Example_Where_Clause" /> -->
+<!-- 	</select> -->
+
+ </mapper>
+ 

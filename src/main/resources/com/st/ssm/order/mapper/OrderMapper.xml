@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.ssm.order.mapper.OrderMapper">
+
+	<!-- Result Map -->
+	<resultMap id="BaseResultMap" type="OrderModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="user_code" property="userCode" />
+		<result column="time" property="time" />
+		<result column="addr_id" property="addrId" />
+		<result column="state" property="state" />
+		<result column="sum" property="sum" />
+		
+	</resultMap>
+
+	<!-- table all fields   sql片段 -->
+	<sql id="Base_Column_List">
+		id, code, user_code, time, addr_id, state
+	</sql>
+	
+	<sql id="table_name">
+		b2c.b_order_information
+	</sql>
+
+	<!-- 拼接查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code = #{code}
+			</if>
+			<if test="userCode != null and userCode != ''">
+				and user_code = #{userCode}
+			</if>
+			<if test="time != null and time != ''">
+				and time = #{time}
+			</if>
+			<if test="addrId != null and addrId != ''">
+				and addr_id = #{addrId}
+			</if>
+			<if test="state != null and state != ''">
+				and state = #{state}
+			</if>
+				
+	</sql>
+	
+<insert id="insert" parameterType="java.lang.String">
+	insert into <include refid="table_name" />
+	(code,user_code,time,addr_id,state)
+	values(#{code},#{userCode},#{time},#{addrId},#{state})
+</insert>	
+
+	<delete id="delete" parameterType="OrderModel"> 
+		delete from <include refid="table_name" /> 
+		where code = #{code} 
+	</delete>
+	
+	<delete id="deleteModel" parameterType="Object">
+		delete from <include refid="table_name" /> 
+		<include refid="Example_Where_Clause" />
+	</delete>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update <include refid="table_name" /> set 
+		<trim suffixOverrides=",">
+			<if test="userCode != null and userCode != '' ">
+				user_code = #{userCode},
+			</if>
+			<if test="time != null and time != '' ">
+				time = #{time},
+			</if>
+			<if test="addrId != null and addrId != ''">
+				addr_id = #{addrId},
+			</if>
+			<if test="state != null and state != ''">
+				state = #{state},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+
+
+	<!-- 系统用户 列表总数 -->
+	<select id="selectCount" resultType="java.lang.Integer" 
+	parameterType="OrderModel">
+		select count(1) from <include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询系统用户列表 -->
+	<select id="selectModel" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from <include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+		limit ${rowStart},${pageLimit}
+	</select>
+
+
+	<!-- 查询系统用户列表 -->
+	<select id="selectList" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from <include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	
+	<select id="selectUser" resultMap="BaseResultMap" parameterType="Object">
+		select *,(SELECT ss.sum from (select sum(sum) as sum,order_code 
+		from b2c.b_order_goods group by order_code ) ss 
+		WHERE ss.order_code=o.code) sum 
+from b2c.b_order_information o
+	</select>
+
+</mapper> 

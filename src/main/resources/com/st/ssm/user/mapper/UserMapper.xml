@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 命名空间 -->
+<mapper namespace="com.st.ssm.user.mapper.UserMapper">
+
+	<!-- Result Map -->
+	<!-- column数据库里的列名，property实体类里的属性名，映射关系 -->
+	<!-- mapper的作用就是创建映射关系，然后进行增删改查等操作 -->
+	<resultMap id="BaseResultMap"
+		type="com.st.ssm.user.model.UserModel">
+		<result column="id" property="id" />
+		<result column="usercode" property="code" />
+		<result column="username" property="name" />
+		<result column="password" property="pass" />
+		<result column="role" property="isManage" />
+	</resultMap>
+
+	<!-- table all fields sql片段 -->
+	<sql id="Base_Column_List">
+		id, usercode, username, password,role
+	</sql>
+	<sql id="UserName">
+		b2c.b_user
+	</sql>
+
+<!-- 	查询条件 -->
+	<sql id="Example_Where_Clause">
+		where 1=1
+		<if test="id != null">
+			and id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and usercode = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			and username = #{name}
+		</if>
+		<if test="pass != null and pass != ''">
+			and password = #{pass}
+		</if>
+		<if test="isManage != null and isManage != ''">
+			and role = #{isManage}
+		</if>
+	</sql>
+
+	<!-- id="insert"对应UserMapper接口中的insert方法，parameterType是参数类型，"Object"这里可以改为UserModel -->
+	<insert id="insert" parameterType="Object">
+		insert into
+		b2c.b_user(usercode, password,username,role)
+		values(#{code},#{pass},#{name},#{isManage})
+	</insert>
+
+<!-- 	删除全部记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from b2c.b_user where
+		id = #{id}
+	</delete>
+
+<!-- 	删除部分记录 -->
+	<delete id="deleteModel" parameterType="Object">
+		delete from b2c.b_user
+		<include refid="Example_Where_Clause" />
+	</delete>
+
+<!-- 	根据，修改全部记录 -->
+	<update id="update" parameterType="Object">
+		update b2c.b_user 
+		set	username = #{name}, password = #{pass},role = #{isManage}
+		where usercode = #{code}
+	</update>
+	
+<!-- 	修改记录，只修改不为空的字段 -->
+	<update id="updateActive" parameterType="Object">
+		update b2c.b_user 
+		set
+		<trim suffixOverrides=",">
+			<if test="name != null and name != '' ">
+				username = #{name},
+			</if>
+			<if test="pass != null and pass != '' ">
+				password = #{pass},
+			</if>
+			<if test="isManage != null and isManage != ''">
+				 role = #{isManage}
+			</if>
+		</trim>
+		where usercode = #{code}
+	</update>
+	<update id="updatePass" parameterType="Object">
+		update b2c.b_user set
+		<trim suffixOverrides=",">
+			<if test="name != null and name != '' ">
+				username = #{name},
+			</if>
+			<if test="pass != null and pass != '' ">
+				password = #{pass},
+			</if>
+			<if test="isManage != null and isManage != '' ">
+				role = #{isManage},
+			</if>
+		</trim>
+		where usercode = #{code}
+	</update>
+
+<!-- 	根据查询 系统用户 -->
+	<select id="selectId" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from b2c.b_user where id = #{id}
+	</select>
+<!-- 根据code 查询系统用户 -->
+	<select id="selectByCode" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from
+		<include refid="UserName" />
+		where usercode=#{code}
+	</select>
+<!-- 	系统用户 列表总数 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="UserModel">
+		select count(1) from b2c.b_user
+		<include refid="Example_Where_Clause" />
+	</select>
+
+<!-- 	查询系统用户列表 -->
+	<select id="selectModel" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from b2c.b_user
+		<include refid="Example_Where_Clause" />
+		limit ${rowStart},${pageLimit}
+	</select>
+
+<!-- 	查询系统用户列表 -->
+	<select id="selectAll" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from b2c.b_user
+		<include refid="Example_Where_Clause" />
+	</select>
+
+	<select id="getModel" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from b2c.b_user where usercode = #{code}
+	</select>
+</mapper>   

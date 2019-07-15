@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.ssm.information.mapper.InformationMapper">
+
+<resultMap id="BaseResultMap" type="com.st.ssm.information.model.InformationModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="price" property="price" />
+		<result column="descr" property="descr" />
+		<result column="count" property="count" />
+		<result column="state" property="state" />
+		<result column="class_code" property="classCode" />
+		<result column="code1" property="code1" />	
+	</resultMap>
+<sql id="Base_Column_List">
+		id, code, name, price, descr, count, state, class_code
+		,(SELECT d.parent_code FROM b2c.b_commodity_classification d where d.code=class_code)code1
+	</sql>
+	
+	<sql id="table_name">
+		b2c.b_commodity_information
+	</sql>
+	
+	<sql id="Example_Where_Clause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code = #{code}
+			</if>
+			<if test="name != null and name != ''">
+				and name like "%"#{name}"%"
+			</if>
+			<if test="price != null and price != ''">
+				and price = #{price}
+			</if>
+			<if test="descr != null and descr != ''">
+				and descr = #{descr}
+			</if>
+			<if test="count != null and count != ''">
+				and count = #{count}
+			</if>
+			<if test="state != null and state != ''">
+				and state = #{state}
+			</if>
+			<if test="classCode != null and classCode != ''">
+				and class_code = #{classCode}
+			</if>
+			<if test="orderby != null and orderby != ''">
+				order by ${orderby}
+			</if>
+	</sql>
+	
+
+
+	
+	<!-- 系统用户 列表总数 -->
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="InformationModel">
+		select count(1) 
+		from <include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+	</select>
+	
+	<!-- 查询系统用户列表 -->
+	<select id="selectModel" resultMap="BaseResultMap" parameterType="Object">
+		select 
+		<include refid="Base_Column_List" />
+		from 
+		<include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+		limit ${rowStart},${pageLimit}
+	</select>
+	
+	
+	
+	
+	
+	<insert id="insert" parameterType="Object">
+		insert into <include refid="table_name" />(code, name, price, descr, count, state, class_code)
+		values(#{code}, #{name}, #{price}, #{descr}, #{count}, #{state}, #{classCode})
+	</insert>
+	
+	<delete id="delete" parameterType="InformationModel"> 
+		delete 
+		from <include refid="table_name" /> 
+		where code = #{code} 
+	</delete>
+	
+	<update id="update" parameterType="Object">
+		update <include refid="table_name" /> set 
+		<trim suffixOverrides=",">
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="price != null and price != '' ">
+				price = #{price},
+			</if>
+			<if test="descr != null and descr != ''">
+				descr = #{descr},
+			</if>
+			<if test="count != null and count != ''">
+				count = #{count},
+			</if>
+			<if test="state != null and state != ''">
+				state = #{state},
+			</if>
+			<if test="classCode != null and classCode != ''">
+				class_code = #{classCode}, 
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+</mapper>

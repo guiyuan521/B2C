@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.st.ssm.classification.mapper.ClassificationMapper">
+ <!-- Result Map 结果映射 查询时使用 -->
+	<resultMap id="BaseResultMap" type="ClassificationModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="descr" property="descr" />
+		<result column="parent_code" property="parentCode" />
+	</resultMap>
+	
+	
+ <!-- 查询条件 -->
+	<sql id="TiaoJian">
+		where 1=1
+		<if test="id !=null">
+			and id = #{id}
+		</if>
+		<if test="code !=null and code !=''">
+			and code like #{code}
+		</if>
+		<if test="name !=null and name !=''">
+			and name like #{name}
+		</if>
+		<if test="descr !=null and descr !=''">
+			and descr like #{descr}
+		</if>
+		<if test="parentCode !=null and parentCode !=''">
+			and parent_code like #{parentCode}
+		</if>
+	</sql>
+	
+	<!-- table all fields sql片段 -->
+	<sql id="Base_Column_List">
+		id, code, name, descr,parent_code
+	</sql>
+	<!-- table all fields sql片段 -->
+	<sql id="TableName">
+		b2c.b_commodity_classification
+	</sql>
+	
+	
+	<insert id="insert" parameterType="Object">
+		insert into
+		<include refid="TableName" />
+		(code, name, descr,parent_code)
+		values(#{code}, #{name},
+		#{descr},#{parentCode})
+	</insert>
+	<!-- 根据code 查询系统用户 -->
+	<select id="selectByCode" resultMap="BaseResultMap" parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from
+		<include refid="TableName" />
+		where code=#{code}
+	</select>
+	
+	<select id="selectModel" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from
+		<include refid="TableName" />
+		<include refid="TiaoJian" />
+		limit ${rowStart},${pageLimit}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer"
+		parameterType="Object">
+		select count(1)
+		from
+		<include refid="TableName" />
+		<include refid="TiaoJian" />
+	</select>
+	<select id="selectAll" resultMap="BaseResultMap"
+		parameterType="Object">
+		select
+		<include refid="Base_Column_List" />
+		from
+		<include refid="TableName" />
+		<include refid="TiaoJian" />
+	</select>
+	<delete id="delete" parameterType="Object">
+		delete from
+		<include refid="TableName" />
+		<include refid="TiaoJian"></include>
+	</delete>
+	
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="update" parameterType="Object">
+		update
+		<include refid="TableName" />
+		set
+		<trim suffixOverrides=",">
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="descr != null and descr != '' ">
+				descr = #{descr},
+			</if>
+			<if test="parentCode !=null and parentCode !=''">
+			   parent_code = #{parentCode}
+		</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	
+ </mapper>

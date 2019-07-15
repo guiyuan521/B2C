@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.ssm.information.mapper.ProductPicMapper">
+
+<resultMap id="BaseResultMap" type="ProductPicModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="url" property="url" />
+		<result column="type" property="type" />
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+		id, code, url, type
+	</sql>
+	
+	<sql id="table_name">
+		b2c.b_commodity_picture
+	</sql>
+	
+	<sql id="Example_Where_Clause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code like #{code}
+			</if>
+			<if test="url != null and url != ''">
+				and url like #{url}
+			</if>
+			<if test="type != null and type != ''">
+				and type like #{type}
+			</if>
+			<if test="orderby != null and orderby != ''">
+				order by ${orderby}
+			</if>
+	</sql>
+	
+	<sql id="pic">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code like #{code}
+			</if>
+			<if test="url != null and url != ''">
+				and url like #{url}
+			</if>
+			<if test="type = 1">
+				and type like #{type}
+			</if>
+			<if test="orderby != null and orderby != ''">
+				order by ${orderby}
+			</if>
+	</sql>
+	<insert id="insert" parameterType="Object">
+		insert into <include refid="table_name" />(code, url, type)
+		values(#{code}, #{url}, #{type})
+	</insert>
+	
+	<delete id="deleteModel" parameterType="Object">
+		delete from <include refid="table_name" /> 
+		<include refid="Example_Where_Clause" />
+	</delete>
+	
+	<update id="updateActive" parameterType="Object">
+		update <include refid="table_name" /> set 
+		<trim suffixOverrides=",">
+			<if test="url != null and url != '' ">
+				url = #{url},
+			</if>
+			<if test="type != null and type != '' ">
+				type = #{type},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from <include refid="table_name" />
+		<include refid="Example_Where_Clause" />
+		limit ${rowStart},${pageLimit}
+	</select>
+	
+	<select id="findPic" resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" />
+		from <include refid="table_name" />
+		<include refid="pic" />
+	</select>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC 
+"-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+		<!-- 打印查询语句  将sql语句打印到控制台，方便进行查看自己书写的语句-->
+	<settings>
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+	
+<!-- 定义一个别名指代UserModel实体类的全类名，此别名用在UserMapper.xml里的<resultMap id="BaseResultMap" type="UserModel"> -->
+	<typeAliases>
+		<typeAlias alias="UserModel" type="com.st.ssm.user.model.UserModel" />
+ 		<typeAlias alias="ClassificationModel" type="com.st.ssm.classification.model.ClassificationModel" /> 
+ 		<typeAlias alias="InformationModel" type="com.st.ssm.information.model.InformationModel" /> 
+ 		<typeAlias alias="ProductPicModel" type="com.st.ssm.information.model.ProductPicModel" /> 
+ 		<typeAlias alias="OrderModel" type="com.st.ssm.order.model.OrderModel" />
+ 		<typeAlias alias="OrderGoodsModel" type="com.st.ssm.order.model.OrderGoodsModel" />
+ 		<typeAlias alias="ShoppingCartModel" type="com.st.ssm.shoppingCart.model.ShoppingCartModel" />
+	</typeAliases>
+
+<!-- UserMapper.xml的路径  从资源文件夹开始书写-->
+	<mappers>
+		<mapper resource="com/st/ssm/user/mapper/UserMapper.xml" />
+		<mapper resource="com/st/ssm/classification/mapper/ClassificationMapper.xml" /> 
+		<mapper resource="com/st/ssm/information/mapper/InformationMapper.xml" />
+		<mapper resource="com/st/ssm/information/mapper/ProductPicMapper.xml" />
+		<mapper resource="com/st/ssm/order/mapper/OrderMapper.xml" />
+		<mapper resource="com/st/ssm/order/mapper/OrderGoodsMapper.xml" />
+		<mapper resource="com/st/ssm/shoppingCart/mapper/ShoppingCartMapper.xml" />
+	</mappers>
+	
+	
+</configuration>
